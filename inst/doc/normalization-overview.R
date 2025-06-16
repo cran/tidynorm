@@ -1,0 +1,255 @@
+## -----------------------------------------------------------------------------
+#| eval: !expr 'rlang::is_installed("magick")'
+#| echo: false
+knitr::knit_hooks$set(crop = knitr::hook_pdfcrop)
+
+
+## -----------------------------------------------------------------------------
+#| message: false
+library(tidynorm)
+library(dplyr)
+library(tidyr)
+
+
+## -----------------------------------------------------------------------------
+#| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
+library(ggplot2)
+library(ggdensity)
+
+
+## -----------------------------------------------------------------------------
+#| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
+#| include: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
+#| code-fold: true
+#| code-summary: color palette
+options(
+  ggplot2.discrete.colour = c(
+    lapply(
+      1:6,
+      \(x) c(
+        "#4477AA", "#EE6677", "#228833",
+        "#CCBB44", "#66CCEE", "#AA3377"
+      )[1:x]
+    )
+  ),
+  ggplot2.discrete.fill = c(
+    lapply(
+      1:6,
+      \(x) c(
+        "#4477AA", "#EE6677", "#228833",
+        "#CCBB44", "#66CCEE", "#AA3377"
+      )[1:x]
+    )
+  )
+)
+
+theme_set(
+  theme_minimal(base_size = 16) +
+    theme(
+      panel.grid = element_blank()
+    )
+)
+
+
+## -----------------------------------------------------------------------------
+speaker_data |>
+  summarise(
+    .by = c(speaker, vowel),
+    across(
+      F1:F3,
+      \(x)mean(x, na.rm = T)
+    )
+  ) ->
+speaker_means
+
+
+## -----------------------------------------------------------------------------
+#| code-fold: true
+#| code-summary: Plotting Code
+#| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
+#| fig-align: center
+#| out-width: 80%
+speaker_means |>
+  filter(
+    vowel %in% c("IY", "UW", "AE", "AA")
+  ) |>
+  ggplot(
+    aes(F2, F1)
+  ) +
+  geom_label(
+    aes(
+      label = vowel,
+      fill = speaker
+    ),
+    color = "white"
+  ) +
+  scale_y_reverse() +
+  scale_x_reverse()
+
+
+## -----------------------------------------------------------------------------
+#| code-fold: true
+#| code-summary: Vowel Comparison
+speaker_means |>
+  filter(
+    vowel %in% c("IY", "UW", "AE", "AA")
+  ) |>
+  pivot_longer(
+    F1:F3,
+    names_to = ".formant_name",
+    values_to = ".formant"
+  ) |>
+  pivot_wider(
+    names_from = vowel,
+    values_from = .formant
+  ) |>
+  arrange(
+    .formant_name
+  )
+
+
+## -----------------------------------------------------------------------------
+#| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
+#| fig-align: center
+#| out-width: 80%
+#| code-fold: true
+#| code-summary: Plotting code
+speaker_centers <- speaker_data |>
+  summarise(
+    .by = speaker,
+    across(
+      F1:F3,
+      ~ mean(.x, na.rm = T)
+    )
+  )
+
+speaker_data |>
+  ggplot(
+    aes(F2, F1, color = speaker)
+  ) +
+  stat_hdr(
+    probs = c(0.95, 0.8, 0.5),
+    fill = NA,
+    alpha = 1,
+    linewidth = 1
+  ) +
+  geom_point(
+    data = speaker_centers,
+    size = 5
+  ) +
+  scale_x_reverse() +
+  scale_y_reverse()
+
+
+## -----------------------------------------------------------------------------
+speaker_data_centered <- speaker_data |>
+  mutate(
+    .by = speaker,
+    across(
+      F1:F3,
+      ~ .x - mean(.x, na.rm = T)
+    )
+  )
+
+
+## -----------------------------------------------------------------------------
+#| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
+#| fig-align: center
+#| out-width: 80%
+#| code-fold: true
+#| code-summary: Plotting code
+speaker_data_centered |>
+  ggplot(
+    aes(F2, F1, color = speaker)
+  ) +
+  stat_hdr(
+    probs = c(0.95, 0.8, 0.5),
+    fill = NA,
+    alpha = 1,
+    linewidth = 1
+  ) +
+  geom_point(
+    data = tibble(),
+    aes(x = 0, y = 0),
+    color = "black",
+    size = 5,
+  ) +
+  scale_y_reverse() +
+  scale_x_reverse()
+
+
+## -----------------------------------------------------------------------------
+speaker_data_scaled <- speaker_data |>
+  mutate(
+    .by = speaker,
+    across(
+      F1:F3,
+      ~ .x / sd(.x, na.rm = T)
+    )
+  )
+
+
+## -----------------------------------------------------------------------------
+#| eval: !expr 'rlang::is_installed(c("ggplot2", "ggdensity"))'
+#| fig-align: center
+#| out-width: 80%
+#| code-fold: true
+#| code-summary: Plotting code
+speaker_data_scaled |>
+  mutate(
+    .by = speaker,
+    across(
+      F1:F3,
+      ~ (.x - mean(.x, na.rm = T)) / sd(.x, na.rm = T)
+    )
+  ) |>
+  ggplot(
+    aes(F2, F1, color = speaker)
+  ) +
+  stat_hdr(
+    probs = c(0.95, 0.8, 0.5),
+    fill = NA,
+    alpha = 1,
+    linewidth = 1
+  ) +
+  geom_point(
+    data = tibble(),
+    aes(x = 0, y = 0),
+    color = "black",
+    size = 5,
+  ) +
+  scale_y_reverse() +
+  scale_x_reverse()
+
+
+## -----------------------------------------------------------------------------
+speaker_data |>
+  norm_generic(
+    F1:F3,
+    .by = speaker,
+    .by_formant = FALSE,
+    .by_token = FALSE,
+    .L = 0,
+    .S = mean(
+      .formant / (.formant_num - 0.5),
+      na.rm = T
+    ),
+    .names = "{.formant}_df"
+  ) ->
+speaker_df_norm
+
+
+## -----------------------------------------------------------------------------
+ggplot(
+  speaker_df_norm,
+  aes(F2_df, F1_df, color = speaker)
+) +
+  stat_hdr(
+    probs = c(0.95, 0.8, 0.5),
+    fill = NA,
+    alpha = 1,
+    linewidth = 1
+  ) +
+  scale_y_reverse() +
+  scale_x_reverse()
+
