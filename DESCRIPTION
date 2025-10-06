@@ -1,7 +1,7 @@
 Type: Package
 Package: tidynorm
 Title: Tools for Tidy Vowel Normalization
-Version: 0.3.0
+Version: 0.3.1
 Authors@R: c(
     person("Josef", "Fruehwald", , "JoFrhwld@gmail.com", role = c("cre", "aut", "cph"))
   )
@@ -19,8 +19,8 @@ License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.2
-Imports: cli, dplyr, glue, purrr, Rcpp, rlang, stringr, tidyr,
-        tidyselect
+Imports: checkmate, cli, dplyr, glue, purrr, Rcpp, rlang, stringr,
+        tidyr, tidyselect
 URL: https://jofrhwld.github.io/tidynorm/,
         https://github.com/JoFrhwld/tidynorm
 Depends: R (>= 4.1)
@@ -32,8 +32,8 @@ VignetteBuilder: quarto
 LinkingTo: Rcpp, RcppArmadillo
 BugReports: https://github.com/JoFrhwld/tidynorm/issues
 NeedsCompilation: yes
-Packaged: 2025-06-13 20:37:44 UTC; joseffruehwald
+Packaged: 2025-10-06 14:22:51 UTC; joseffruehwald
 Author: Josef Fruehwald [cre, aut, cph]
 Maintainer: Josef Fruehwald <JoFrhwld@gmail.com>
 Repository: CRAN
-Date/Publication: 2025-06-16 11:50:02 UTC
+Date/Publication: 2025-10-06 15:30:02 UTC
