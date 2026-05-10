@@ -10,7 +10,9 @@ norm_messages <- list(
   .by = "grouped by {.var { .by}}",
   .by_formant = "within formant: { .by_formant}",
   .by_token = "within token: { .by_token}",
-  .norm = "{ .norm}"
+  .pre_trans = "Transformation prior to normalization: { .pre_trans}",
+  .norm = "{ .norm}",
+  .post_trans = "Transformation after normalization: { .post_trans}"
 )
 
 number_names <- c(
@@ -173,6 +175,23 @@ append_norm_info <- function(
     .data,
     info) {
   prev_attr <- attributes(.data)$norminfo
+
+  if (length(info$.post_trans) > 1) {
+    info$.post_trans <- info$.post_trans[3]
+  }
+
+  if (length(info$.pre_trans) > 1){
+    info$.pre_trans <- info$.pre_trans[3]
+  }
+
+  if ("identity" %in% info$.post_trans) {
+    info$.post_trans <- NULL
+  }
+
+  if ("identity" %in% info$.pre_trans) {
+    info$.pre_trans <- NULL
+  }
+
   attr(.data, "norminfo") <- c(
     prev_attr,
     list(
@@ -292,6 +311,7 @@ check_norm <- function(.data) {
 
 #' Convert text-based formant names to
 #' numeric
+#' @importFrom checkmate check_character
 #' @noRd
 name_to_formant_num <- function(.formant_name, call = caller_env()) {
   checkmate::check_character(.formant_name, any.missing = FALSE, min.len = 1)

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.30">
+<meta name="generator" content="quarto-1.8.27">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -202,7 +202,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -377,7 +377,8 @@ L = \frac{1}{MN}\sum_{i = 1}^M\sum_{j=1}^N \log(F_{ij})
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • normalized values in `F1_lm`, `F2_lm`, and `F3_lm`</span></span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • grouped by `speaker`</span></span>
 <span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • within formant: FALSE</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • (.formant - mean(.formant, na.rm = T))/(1)</span></span></code></pre></div>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • Transformation prior to normalization: log</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • (.formant - mean(.formant, na.rm = T))/(1)</span></span></code></pre></div>
 </div>
 <h4 id="on-tracks-1">On tracks</h4>
 <div class="cell">
@@ -396,7 +397,8 @@ L = \frac{1}{MN}\sum_{i = 1}^M\sum_{j=1}^N \log(F_{ij})
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • time column: `t`</span></span>
 <span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • grouped by `speaker`</span></span>
 <span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • within formant: FALSE</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • (.formant - mean(.formant, na.rm = T))/(1/sqrt(2))</span></span></code></pre></div>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • Transformation prior to normalization: log</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • (.formant - mean(.formant, na.rm = T))/(1/sqrt(2))</span></span></code></pre></div>
 </div>
 <h4 id="on-dct-coefficients-1">On DCT Coefficients</h4>
 <div class="cell">
@@ -604,7 +606,8 @@ L_j = \text{bark}(F_{3j})
 <span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • grouped by `speaker`</span></span>
 <span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • within formant: FALSE</span></span>
 <span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • within token: TRUE</span></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • (.formant - .formant[3])/(1)</span></span></code></pre></div>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • Transformation prior to normalization: hz_to_bark</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • (.formant - .formant[3])/(1)</span></span></code></pre></div>
 </div>
 <h4 id="on-tracks-4">On tracks</h4>
 <div class="cell">
@@ -625,7 +628,8 @@ L_j = \text{bark}(F_{3j})
 <span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • grouped by `speaker`</span></span>
 <span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • within formant: FALSE</span></span>
 <span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • within token: TRUE</span></span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • (.formant - .formant[3])/(1/sqrt(2))</span></span></code></pre></div>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • Transformation prior to normalization: hz_to_bark</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • (.formant - .formant[3])/(1/sqrt(2))</span></span></code></pre></div>
 </div>
 <h4 id="on-dct-coefficients-4">On DCT Coefficients</h4>
 <div class="cell">

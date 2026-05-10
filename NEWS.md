@@ -1,3 +1,9 @@
+# tidynorm 0.4.1
+
+## Minor bug fixes
+
+* Updates how `checkmate::check_character()` is imported (#32, #34)
+
 # tidynorm 0.4.0
 
 ## New features
